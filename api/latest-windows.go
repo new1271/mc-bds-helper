@@ -10,14 +10,14 @@ import (
 )
 
 var (
-	cachedArchiveUrl = ""
-	cacheUntil       time.Time
+	cachedArchiveUrl2 = ""
+	cacheUntil2       time.Time
 )
 
 func GetLatest(w http.ResponseWriter, r *http.Request) {
-	if cachedArchiveUrl == "" || time.Now().After(cacheUntil) {
+	if cachedArchiveUrl == "" || time.Now().After(cacheUntil2) {
 		var err *lookupError
-		cachedArchiveUrl, err = lookupLatestVersion()
+		cachedArchiveUrl2, err = lookupLatestVersion()
 		if err !=  nil {
 			log.Printf("E: %s", err)
 			w.Header().Set("Content-Type", "text/plain")
@@ -27,12 +27,12 @@ func GetLatest(w http.ResponseWriter, r *http.Request) {
 		}
 
 		cacheDuration := loadCacheDuration()
-		cacheUntil = time.Now().Add(cacheDuration)
+		cacheUntil2 = time.Now().Add(cacheDuration)
 	}
 
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(cachedArchiveUrl))
+	w.Write([]byte(cachedArchiveUrl2))
 }
 
 func loadCacheDuration() time.Duration {
