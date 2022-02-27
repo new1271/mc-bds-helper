@@ -45,7 +45,9 @@ func GetLatest(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("linux="))
 	w.Write([]byte(cachedArchiveUrl))
+	w.Write([]byte("windows="))
 	w.Write([]byte(cachedArchiveUrl2))
 }
 
@@ -89,7 +91,7 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
 	}
 
-	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest-linux", restify.WithHeaders(
+	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest", restify.WithHeaders(
 		map[string]string{
 			"accept-language": "*",
 		},
@@ -118,7 +120,7 @@ func lookupLatestVersionForWindows() (string, *lookupError) {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
 	}
 
-	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest-win", restify.WithHeaders(
+	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest", restify.WithHeaders(
 		map[string]string{
 			"accept-language": "*",
 		},
