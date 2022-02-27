@@ -16,13 +16,14 @@ const (
 
 var (
 	cachedArchiveUrl = ""
+	cachedArchiveUrl2 = ""
 	cacheUntil       time.Time
 )
 
 func GetLatest(w http.ResponseWriter, r *http.Request) {
 	if cachedArchiveUrl == "" || time.Now().After(cacheUntil) {
 		var err *lookupError
-		cachedArchiveUrl, err = lookupLatestVersion()
+		cachedArchiveUrl, err = lookupLatestVersionForLinux()
 		if err !=  nil {
 			log.Printf("E: %s", err)
 			w.Header().Set("Content-Type", "text/plain")
@@ -30,7 +31,14 @@ func GetLatest(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(err.Error()))
 			return
 		}
-
+		cachedArchiveUrl2, err2 = lookupLatestVersionForWindows()
+		if err2 !=  nil {
+			log.Printf("E: %s", err2)
+			w.Header().Set("Content-Type", "text/plain")
+			w.WriteHeader(err2.statusCode)
+			w.Write([]byte(err2.Error()))
+			return
+		}
 		cacheDuration := loadCacheDuration()
 		cacheUntil = time.Now().Add(cacheDuration)
 	}
@@ -38,6 +46,7 @@ func GetLatest(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(cachedArchiveUrl))
+	w.Write([]byte(cachedArchiveUrl2))
 }
 
 func loadCacheDuration() time.Duration {
@@ -74,7 +83,7 @@ func (e *lookupError) Error() string {
 	return e.message
 }
 
-func lookupLatestVersion() (string, *lookupError) {
+func lookupLatestVersionForLinux() (string, *lookupError) {
 	downloadUrl, err := url.Parse(downloadPage)
 	if err != nil {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
@@ -90,6 +99,35 @@ func lookupLatestVersion() (string, *lookupError) {
 	}
 
 	subset := restify.FindSubsetByAttributeNameValue(content, "data-platform", "serverBedrockLinux")
+	if len(subset) == 0 {
+		return "", newLookupError("Failed to locate data-platform element", nil, http.StatusBadGateway)
+	}
+
+	for _, attribute := range subset[0].Attr {
+		if attribute.Key == "href" {
+			return attribute.Val, nil
+		}
+	}
+
+	return "", newLookupError("Matched element was missing href", nil, http.StatusBadGateway)
+}
+
+func lookupLatestVersionForWindows() (string, *lookupError) {
+	downloadUrl, err := url.Parse(downloadPage)
+	if err != nil {
+		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
+	}
+
+	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest-win", restify.WithHeaders(
+		map[string]string{
+			"accept-language": "*",
+		},
+	))
+	if err != nil {
+		return "", newLookupError("Failed to load content", err, http.StatusInternalServerError)
+	}
+
+	subset := restify.FindSubsetByAttributeNameValue(content, "data-platform", "serverBedrockWindows")
 	if len(subset) == 0 {
 		return "", newLookupError("Failed to locate data-platform element", nil, http.StatusBadGateway)
 	}
