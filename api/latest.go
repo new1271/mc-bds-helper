@@ -87,8 +87,6 @@ func (e *lookupError) Error() string {
 }
 
 func lookupLatestVersionForLinux() (string, *lookupError) {
-	var result string
-	var footIndex int
 	downloadUrl, err := url.Parse(downloadPage)
 	if err != nil {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
@@ -110,6 +108,8 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 
 	for _, attribute := range subset[0].Attr {
 		if attribute.Key == "href" {
+			var result string
+			var footIndex int
 			result := attribute.Val
 			footIndex := strings.Index(result,".zip")
 			return result[42:footIndex], nil
@@ -120,8 +120,6 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 }
 
 func lookupLatestVersionForWindows() (string, *lookupError) {
-	var result string
-	var footIndex int
 	downloadUrl, err := url.Parse(downloadPage)
 	if err != nil {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
@@ -143,6 +141,8 @@ func lookupLatestVersionForWindows() (string, *lookupError) {
 
 	for _, attribute := range subset[0].Attr {
 		if attribute.Key == "href" {
+			var result string
+			var footIndex int
 			result := attribute.Val
 			footIndex := strings.Index(result,".zip")
 			return result[40:footIndex], nil
