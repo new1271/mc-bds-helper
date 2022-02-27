@@ -7,10 +7,11 @@ import (
 	"net/url"
 	"os"
 	"time"
+	"strings"
 )
 
 const (
-	defaultCacheDuration = time.Second
+	defaultCacheDuration = time.Hour
 	downloadPage = "https://www.minecraft.net/en-us/download/server/bedrock"
 )
 
@@ -86,6 +87,8 @@ func (e *lookupError) Error() string {
 }
 
 func lookupLatestVersionForLinux() (string, *lookupError) {
+	var result string
+	var footIndex int
 	downloadUrl, err := url.Parse(downloadPage)
 	if err != nil {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
@@ -107,7 +110,9 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 
 	for _, attribute := range subset[0].Attr {
 		if attribute.Key == "href" {
-			return attribute.Val, nil
+			result := attribute.Val
+			footIndex := strings.Index(result,".zip")
+			return result[42:footIndex], nil
 		}
 	}
 
@@ -115,6 +120,8 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 }
 
 func lookupLatestVersionForWindows() (string, *lookupError) {
+	var result string
+	var footIndex int
 	downloadUrl, err := url.Parse(downloadPage)
 	if err != nil {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
@@ -136,7 +143,9 @@ func lookupLatestVersionForWindows() (string, *lookupError) {
 
 	for _, attribute := range subset[0].Attr {
 		if attribute.Key == "href" {
-			return attribute.Val, nil
+			result := attribute.Val
+			footIndex := strings.Index(result,".zip")
+			return result[40:footIndex], nil
 		}
 	}
 
