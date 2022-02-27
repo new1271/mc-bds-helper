@@ -9,11 +9,6 @@ import (
 	"time"
 )
 
-const (
-	defaultCacheDuration = time.Hour
-	downloadPage = "https://www.minecraft.net/en-us/download/server/bedrock"
-)
-
 var (
 	cachedArchiveUrl = ""
 	cacheUntil       time.Time
