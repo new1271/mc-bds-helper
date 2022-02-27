@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultCacheDuration = time.Hour
+	defaultCacheDuration = time.Second
 	downloadPage = "https://www.minecraft.net/en-us/download/server/bedrock"
 )
 
