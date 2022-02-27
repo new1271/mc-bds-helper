@@ -31,12 +31,12 @@ func GetLatest(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(err.Error()))
 			return
 		}
-		cachedArchiveUrl2, err2 = lookupLatestVersionForWindows()
-		if err2 !=  nil {
-			log.Printf("E: %s", err2)
+		cachedArchiveUrl2, err = lookupLatestVersionForWindows()
+		if err !=  nil {
+			log.Printf("E: %s", err)
 			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(err2.statusCode)
-			w.Write([]byte(err2.Error()))
+			w.WriteHeader(err.statusCode)
+			w.Write([]byte(err.Error()))
 			return
 		}
 		cacheDuration := loadCacheDuration()
