@@ -108,8 +108,6 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 
 	for _, attribute := range subset[0].Attr {
 		if attribute.Key == "href" {
-			var result string
-			var footIndex int
 			result := attribute.Val
 			footIndex := strings.Index(result,".zip")
 			return result[42:footIndex], nil
@@ -141,8 +139,6 @@ func lookupLatestVersionForWindows() (string, *lookupError) {
 
 	for _, attribute := range subset[0].Attr {
 		if attribute.Key == "href" {
-			var result string
-			var footIndex int
 			result := attribute.Val
 			footIndex := strings.Index(result,".zip")
 			return result[40:footIndex], nil
