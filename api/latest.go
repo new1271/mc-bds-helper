@@ -47,7 +47,7 @@ func GetLatest(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("linux="))
 	w.Write([]byte(cachedArchiveUrl))
-	w.Write([]byte("windows="))
+	w.Write([]byte("\nwindows="))
 	w.Write([]byte(cachedArchiveUrl2))
 }
 
