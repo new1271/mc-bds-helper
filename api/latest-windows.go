@@ -80,7 +80,7 @@ func lookupLatestVersion() (string, *lookupError) {
 		return "", newLookupError("Failed to parse download URL", err, http.StatusInternalServerError)
 	}
 
-	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest_win", restify.WithHeaders(
+	content, err := restify.LoadContent(downloadUrl, "mc-bds-helper/latest-win", restify.WithHeaders(
 		map[string]string{
 			"accept-language": "*",
 		},
