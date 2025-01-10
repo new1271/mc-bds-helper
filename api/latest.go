@@ -110,7 +110,7 @@ func lookupLatestVersionForLinux() (string, *lookupError) {
 		if attribute.Key == "href" {
 			result := attribute.Val
 			footIndex := strings.Index(result,".zip")
-			return result[57:footIndex], nil
+			return result[74:footIndex], nil
 		}
 	}
 
@@ -141,7 +141,7 @@ func lookupLatestVersionForWindows() (string, *lookupError) {
 		if attribute.Key == "href" {
 			result := attribute.Val
 			footIndex := strings.Index(result,".zip")
-			return result[55:footIndex], nil
+			return result[72:footIndex], nil
 		}
 	}
 
